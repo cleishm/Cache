@@ -30,7 +30,7 @@ the entry($key) method of a Cache instance.
 =cut
 package Cache::Entry;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Cache;
@@ -39,7 +39,7 @@ use Carp;
 
 use fields qw(cache key);
 
-our $VERSION = '2.00';
+our $VERSION = '2.02';
 
 
 sub new {
@@ -351,6 +351,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.3 2003-08-14 13:21:37 caleishm Exp $
+$Id: Entry.pm,v 1.4 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

@@ -11,12 +11,12 @@ Cache::RemovalStrategy - abstract Removal Strategy interface for a Cache
 =cut
 package Cache::RemovalStrategy;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '2.00';
+our $VERSION = '2.02';
 
 
 sub new {
@@ -57,6 +57,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: RemovalStrategy.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: RemovalStrategy.pm,v 1.2 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

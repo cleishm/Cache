@@ -10,7 +10,7 @@ close.  It is for use by Cache::File and should not be used directly.
 =cut
 package Cache::File::Handle;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use IO::File;
@@ -75,6 +75,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Handle.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: Handle.pm,v 1.3 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

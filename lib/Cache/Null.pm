@@ -20,7 +20,7 @@ indicating that there is no data stored.
 =cut
 package Cache::Null;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Cache::Null::Entry;
@@ -28,7 +28,7 @@ use Cache::Null::Entry;
 use base qw(Cache);
 use fields qw(cache_root);
 
-our $VERSION = '2.00';
+our $VERSION = '2.02';
 
 =head1 CONSTRUCTOR
 
@@ -119,6 +119,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Null.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Null.pm,v 1.2 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

@@ -15,7 +15,7 @@ of Cache.  It should not be created or used directly, please see
 =cut
 package Cache::File::Entry;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Cache::File;
@@ -30,7 +30,7 @@ use Carp;
 use base qw(Cache::Entry);
 use fields qw(dir path lockdetails);
 
-our $VERSION = '2.00';
+our $VERSION = '2.02';
 
 # hash of locks held my the process, keyed on path.  This is useful for
 # catching potential deadlocks and warning the user, and for implementing
@@ -548,6 +548,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.4 2003-08-14 13:48:26 caleishm Exp $
+$Id: Entry.pm,v 1.5 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

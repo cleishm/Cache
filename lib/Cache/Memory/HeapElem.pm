@@ -9,7 +9,9 @@ For internal use by Cache::Memory only.
 =cut
 package Cache::Memory::HeapElem;
 
+require 5.006;
 use strict;
+use warnings;
 use Heap::Elem;
 our @ISA = qw(Heap::Elem);
 
@@ -66,6 +68,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: HeapElem.pm,v 1.2 2003-07-08 09:43:12 caleishm Exp $
+$Id: HeapElem.pm,v 1.3 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

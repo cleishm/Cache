@@ -20,7 +20,7 @@ between process invocations.
 =cut
 package Cache::File;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Cache::File::Heap;
@@ -41,7 +41,7 @@ use fields qw(
     expheap ageheap useheap index lockfile
     lock lockcount openexp openage openuse openidx);
 
-our $VERSION = '2.01';
+our $VERSION = '2.02';
 
 sub LOCK_NONE ()  { 0 }
 sub LOCK_LOCAL () { 1 }
@@ -637,6 +637,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: File.pm,v 1.3 2003-08-14 13:25:39 caleishm Exp $
+$Id: File.pm,v 1.4 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

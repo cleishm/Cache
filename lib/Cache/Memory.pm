@@ -24,7 +24,7 @@ not destroy the data.
 =cut
 package Cache::Memory;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Heap::Fibonacci;
@@ -34,7 +34,7 @@ use Cache::Memory::Entry;
 use base qw(Cache);
 use fields qw(namespace);
 
-our $VERSION = '2.01';
+our $VERSION = '2.02';
 
 
 # storage for all data
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.5 2003-08-14 13:49:30 caleishm Exp $
+$Id: Memory.pm,v 1.6 2004-03-22 13:16:41 caleishm Exp $
 
 =cut

@@ -23,7 +23,7 @@ to ensure that it operates as required by the Cache specification.
 =cut
 package Cache::Tester;
 
-require 5.005;
+require 5.006;
 use strict;
 use warnings;
 use Test::More;
@@ -32,7 +32,7 @@ use vars qw(@ISA @EXPORT $VERSION $CACHE_TESTS);
 use Carp;
 
 @ISA = qw(Exporter Test::More);
-$VERSION = "2.00";
+$VERSION = "2.02";
 @EXPORT = (qw(run_cache_tests $CACHE_TESTS), @Test::More::EXPORT);
 
 $CACHE_TESTS = 75;
@@ -499,6 +499,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.3 2003-08-14 13:49:57 caleishm Exp $
+$Id: Tester.pm,v 1.4 2004-03-22 13:16:41 caleishm Exp $
 
 =cut
