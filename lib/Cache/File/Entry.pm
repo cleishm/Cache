@@ -341,8 +341,8 @@ sub set_validity {
     my $index_entries = $cache->get_index_entries($key);
 
     unless ($index_entries) {
-        $cache->unlock();
-        croak "Cannot set validity on non-existant entry: $key";
+        $self->set('');
+    	$index_entries = $cache->get_index_entries($key);
     }
 
     $$index_entries{validity} = $data;
@@ -548,6 +548,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.3 2003-06-29 14:31:19 caleishm Exp $
+$Id: Entry.pm,v 1.4 2003-08-14 13:48:26 caleishm Exp $
 
 =cut
