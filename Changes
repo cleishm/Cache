@@ -1,3 +1,7 @@
+2003-12-15
+	- Fixed the Cache::freeze() shortcut method which wasn't passing
+	  arguments to Cache::Entry::freeze() (credit to Ingo Blechschmidt).
+
 2003-08-18
 	- Bugfix release (2.01)
 	 o Fixed parsing of all digit expiry times

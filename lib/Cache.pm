@@ -381,7 +381,7 @@ sub set_validity {
 sub freeze {
     my Cache $self = shift;
     my $key = shift;
-    return $self->entry($key)->freeze();
+    return $self->entry($key)->freeze(@_);
 }
 
 =item $c->thaw( $key )
@@ -625,6 +625,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Cache.pm,v 1.3 2003-08-14 13:19:15 caleishm Exp $
+$Id: Cache.pm,v 1.4 2003-12-14 23:16:14 caleishm Exp $
 
 =cut
