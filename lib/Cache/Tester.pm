@@ -35,7 +35,7 @@ use Carp;
 $VERSION = "2.00";
 @EXPORT = (qw(run_cache_tests $CACHE_TESTS), @Test::More::EXPORT);
 
-$CACHE_TESTS = 71;
+$CACHE_TESTS = 75;
 
 sub run_cache_tests {
     my ($cache) = @_;
@@ -381,6 +381,29 @@ sub test_validity {
     my $validity = $entry->validity();
     _ok($validity, 'validity retrieved');
     _is($validity->{tester}, 'test string', 'validity correct');
+
+    $entry->remove();
+
+    # create an entry with only validity
+    $entry->set_validity({ tester => 'test string' });
+
+    undef $entry;
+    $entry = $cache->entry('validityentry');
+    $validity = $entry->validity();
+    _ok($validity, 'validity retrieved');
+    _is($validity->{tester}, 'test string', 'validity correct');
+
+    $entry->remove();
+
+    # create an entry with scalar validity
+    $entry->set('test data');
+    $entry->set_validity('test string');
+
+    undef $entry;
+    $entry = $cache->entry('validityentry');
+    $validity = $entry->validity();
+    _ok($validity, 'validity retrieved');
+    _is($validity, 'test string', 'validity correct');
 }
 
 sub test_load_callback {
@@ -476,6 +499,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: Tester.pm,v 1.3 2003-08-14 13:49:57 caleishm Exp $
 
 =cut
