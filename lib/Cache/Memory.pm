@@ -178,7 +178,7 @@ sub count {
     my $count = 0;
     my $nsstore = $Store{$self->{namespace}};
     foreach my $key (keys %$nsstore) {
-        $count++ if exists $nsstore->{$key}->{data};
+        $count++ if defined $nsstore->{$key}->{data};
     }
     return $count;
 }
@@ -246,7 +246,7 @@ sub remove {
     my $store_entry = $Store{$ns}{$key}
         or return undef;
 
-    exists $store_entry->{data}
+    defined $store_entry->{data}
         or return undef;
 
     # remove from heap
@@ -343,7 +343,7 @@ sub entry_dropped_final_rc {
     my ($key) = @_;
     my $ns = $self->{namespace};
 
-    delete $Store{$ns}{$key} unless exists $Store{$ns}{$key}{data};
+    delete $Store{$ns}{$key} unless defined $Store{$ns}{$key}{data};
 }
 
 
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.4 2003-08-14 13:25:39 caleishm Exp $
+$Id: Memory.pm,v 1.5 2003-08-14 13:49:30 caleishm Exp $
 
 =cut

@@ -58,7 +58,7 @@ sub exists {
     # ensure pending expiries are removed
     $self->{cache}->purge();
 
-    return exists $self->{store_entry}->{data};
+    return defined $self->{store_entry}->{data};
 }
 
 sub _set {
@@ -69,7 +69,7 @@ sub _set {
     my $key = $self->{key};
     my $entry = $self->{store_entry};
 
-    my $exists = exists $entry->{data};
+    my $exists = defined $entry->{data};
     my $orig_size;
 
     unless ($exists) {
@@ -118,7 +118,7 @@ sub _get {
 
 sub size {
     my Cache::Memory::Entry $self = shift;
-    exists $self->{store_entry}->{data}
+    defined $self->{store_entry}->{data}
         or return undef;
     return length(${$self->{store_entry}->{data}});
 }
@@ -144,7 +144,7 @@ sub _set_expiry {
     my $cache = $self->{cache};
     my $entry = $self->{store_entry};
 
-    exists $entry->{data}
+    defined $entry->{data}
         or croak "Cannot set expiry on non-existant entry: $self->{key}";
 
     my $exp_elem = $entry->{exp_elem};
@@ -175,7 +175,7 @@ sub _handle {
 
     # set the entry to a empty string if the entry doesn't exist or
     # should be truncated
-    if (not exists $entry->{data} or $mode =~ /^\+?>$/) {
+    if (not defined $entry->{data} or $mode =~ /^\+?>$/) {
         # return undef unless we're writing to the string
         $writing or return undef;
         $self->_set('', $expiry);
@@ -218,8 +218,10 @@ sub set_validity {
 
     my $entry = $self->{store_entry};
 
-    exists $entry->{data}
-        or croak "Cannot set validity on non-existant entry: $self->{key}";
+    # ensure data is not undefined
+    unless (defined $entry->{data}) {
+    	$self->set('');
+    }
 
     $entry->{validity} = $data;
 }
@@ -281,6 +283,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.3 2003-08-14 13:27:27 caleishm Exp $
+$Id: Entry.pm,v 1.4 2003-08-14 13:49:30 caleishm Exp $
 
 =cut
