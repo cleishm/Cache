@@ -32,12 +32,12 @@ use fields qw(dir path lockdetails);
 
 our $VERSION = '2.00';
 
-# hash of locks held my the process.  This is useful for catching potential
-# deadlocks and warning the user, and for implementing LOCK_NONE (which still
-# needs to do some synchronization).
-# Each entry will be an hash of { lock, type, count, lock, lockfh, linkcount }.
-# The filehandle and link count is for checking when the lock has been
-# released by another process.
+# hash of locks held my the process, keyed on path.  This is useful for
+# catching potential deadlocks and warning the user, and for implementing
+# LOCK_NONE (which still needs to do some synchronization).  Each entry will
+# be an hash of { lock, type, count, lock, lockfh, linkcount }.  The
+# filehandle and link count is for checking when the lock has been released by
+# another process.
 my %PROCESS_LOCKS;
 
 
@@ -106,7 +106,7 @@ sub _set {
 
     # invalidate any active handle locks
     unlink($self->{path} . $Cache::File::LOCK_EXT);
-    delete $PROCESS_LOCKS{$key};
+    delete $PROCESS_LOCKS{$self->{path}};
 
     $self->_set_expiry($expiry) if $expiry or $exists;
     $cache->update_last_use($key, $time) if $exists;
@@ -212,7 +212,7 @@ sub remove {
 
     # obliterate any entry lockfile
     unlink($self->{path} . $Cache::File::LOCK_EXT);
-    delete $PROCESS_LOCKS{$key};
+    delete $PROCESS_LOCKS{$self->{path}};
 
     $cache->unlock();
 
@@ -372,8 +372,8 @@ sub _lock {
     # entry already has the lock?
     $self->{lockdetails} and die "entry already holding a lock";
 
-    my $key = $self->{key};
-    my $lock_details = $PROCESS_LOCKS{$key};
+    my $path = $self->{path};
+    my $lock_details = $PROCESS_LOCKS{$path};
     
     if ($lock_details) {
         if ($$lock_details{type} != $type) {
@@ -386,7 +386,7 @@ sub _lock {
     }
 
     # create new entry
-    $lock_details = $PROCESS_LOCKS{$key} = {};
+    $lock_details = $PROCESS_LOCKS{$path} = {};
 
     # no need for any locking with LOCK_NONE
     if ($self->{cache}->cache_lock_level() != Cache::File::LOCK_NONE()) {
@@ -394,7 +394,7 @@ sub _lock {
         my $oldmask = umask $self->{cache}->cache_umask();
 
         my $lock = File::NFSLock->new({
-                file                => $self->{path},
+                file                => $path,
                 lock_type           => $type | ($tryonly? LOCK_NB : 0),
                 stale_lock_timeout  => $Cache::File::STALE_LOCK_TIMEOUT,
             });
@@ -402,7 +402,7 @@ sub _lock {
         unless ($lock) {
             umask $oldmask;
             $tryonly and return 0;
-            die "Failed to obtain lock on lockfile on '$self->{path}': ".
+            die "Failed to obtain lock on lockfile on '$path': ".
                 $File::NFSLock::errstr."\n";
         }
 
@@ -413,7 +413,7 @@ sub _lock {
         # count (such that we could end up with a link count that is already 0).
         my $fh = Symbol::gensym;
         my $linkcount;
-        my $lockfile = $self->{path} . $Cache::File::LOCK_EXT;
+        my $lockfile = $path . $Cache::File::LOCK_EXT;
         if (($linkcount = (stat $lockfile)[3]) and open($fh, $lockfile)) {
             $$lock_details{lock} = $lock;
             $$lock_details{lockfh} = $fh;
@@ -421,7 +421,7 @@ sub _lock {
         }
         else {
             # lock failed - remove lock details
-            delete $PROCESS_LOCKS{$key};
+            delete $PROCESS_LOCKS{$path};
         }
         umask $oldmask;
     }
@@ -453,14 +453,14 @@ sub _unlock {
 
     $self->{lockdetails} = undef;
 
-    my $lock_details = $PROCESS_LOCKS{$self->{key}};
+    my $lock_details = $PROCESS_LOCKS{$self->{path}};
     --$$lock_details{count} == 0
         or return;
 
     if ($self->{cache}->cache_lock_level() != Cache::File::LOCK_NONE()) {
         $$lock_details{lock}->unlock;
     }
-    delete $PROCESS_LOCKS{$self->{key}};
+    delete $PROCESS_LOCKS{$self->{path}};
 }
 
 # check that we still hold our lock
@@ -468,7 +468,7 @@ sub _check_lock {
     my Cache::File::Entry $self = shift;
 
     $self->{lockdetails} or return 0;
-    my $lock_details = $PROCESS_LOCKS{$self->{key}}
+    my $lock_details = $PROCESS_LOCKS{$self->{path}}
         or return 0;
 
     # check lock details reference still matches global
@@ -480,7 +480,7 @@ sub _check_lock {
         my $lockfh = $$lock_details{lockfh};
         if (((stat $lockfh)[3] || 0) < $$lock_details{linkcount}) {
             # lock is gone
-            delete $PROCESS_LOCKS{$self->{key}};
+            delete $PROCESS_LOCKS{$self->{path}};
             return 0;
         }
     }
@@ -509,6 +509,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Entry.pm,v 1.2 2003-06-08 22:25:45 caleishm Exp $
 
 =cut
