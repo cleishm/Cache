@@ -284,7 +284,7 @@ sub add_expiry_to_heap {
     my Cache::Memory $self = shift;
     my ($key, $time) = @_;
 
-    my $exp_elem = Memory::Cache::HeapElem->new($self->{namespace},$key,$time);
+    my $exp_elem = Cache::Memory::HeapElem->new($self->{namespace},$key,$time);
     $Expiry_Heap->add($exp_elem);
     return $exp_elem;
 }
@@ -301,7 +301,7 @@ sub add_age_to_heap {
     my ($key, $time) = @_;
     my $ns = $self->{namespace};
 
-    my $age_elem = Memory::Cache::HeapElem->new($ns,$key,$time);
+    my $age_elem = Cache::Memory::HeapElem->new($ns,$key,$time);
     $Age_Heaps{$ns}->add($age_elem);
     return $age_elem;
 }
@@ -311,7 +311,7 @@ sub add_use_to_heap {
     my ($key, $time) = @_;
     my $ns = $self->{namespace};
 
-    my $use_elem = Memory::Cache::HeapElem->new($ns,$key,$time);
+    my $use_elem = Cache::Memory::HeapElem->new($ns,$key,$time);
     $Use_Heaps{$ns}->add($use_elem);
     return $use_elem;
 }
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: Memory.pm,v 1.3 2003-07-08 09:43:11 caleishm Exp $
 
 =cut

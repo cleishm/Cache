@@ -7,7 +7,7 @@ Cache::Memory::HeapElem - wrapper for Heap::Elem that stores keys
 For internal use by Cache::Memory only.
 
 =cut
-package Memory::Cache::HeapElem;
+package Cache::Memory::HeapElem;
 
 use strict;
 use Heap::Elem;
@@ -66,6 +66,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: HeapElem.pm,v 1.1.1.1 2003-06-05 21:46:10 caleishm Exp $
+$Id: HeapElem.pm,v 1.2 2003-07-08 09:43:12 caleishm Exp $
 
 =cut
