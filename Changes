@@ -2,6 +2,7 @@
 	- Bugfix release (2.02)
 	- Update require to 5.006 since 'use warnings' depends on it
 	  (credit to Adam Kennedy).
+	- Fixed a comparison issue with DB_File, where it can compare undef's.
 
 2003-12-15
 	- Fixed the Cache::freeze() shortcut method which wasn't passing
