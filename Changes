@@ -1,9 +1,11 @@
-2.01
-	- Bugfix release
+2003-08-18
+	- Bugfix release (2.01)
 	 o Fixed parsing of all digit expiry times
 	 o Fixed use of scalar validity in Cache::Memory
 	 o Allowed validity to be set on non-existant entry
 	   (sets entry data to zero length)
+	 o Fixed package name for Cache::Memory::HeapElem
+	 o Documentation fixes
 
-2.00
-	- Initial release
+2003-07-07
+	- Initial release (2.00)
