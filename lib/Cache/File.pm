@@ -41,7 +41,7 @@ use fields qw(
     expheap ageheap useheap index lockfile
     lock lockcount openexp openage openuse openidx);
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 sub LOCK_NONE ()  { 0 }
 sub LOCK_LOCAL () { 1 }
@@ -598,7 +598,7 @@ disk (and removing any entries that have dissapeared or adding any new ones).
 =item index efficiency
 
 Currently Berkeley DB's are used for indexes of expiry time, last use and entry
-age.  The use the BTREE variant in order to implement a heap (see
+age.  They use the BTREE variant in order to implement a heap (see
 Cache::File::Heap).  This is probably not the most efficient format and having
 3 separate index files adds overhead.  These are also cross-referenced with
 a fourth index file that uses a normal hash db and contains all these time
@@ -637,6 +637,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: File.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: File.pm,v 1.3 2003-08-14 13:25:39 caleishm Exp $
 
 =cut

@@ -34,7 +34,7 @@ use Cache::Memory::Entry;
 use base qw(Cache);
 use fields qw(namespace);
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 
 # storage for all data
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.3 2003-07-08 09:43:11 caleishm Exp $
+$Id: Memory.pm,v 1.4 2003-08-14 13:25:39 caleishm Exp $
 
 =cut
