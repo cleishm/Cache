@@ -6,7 +6,7 @@ Cache - the Cache interface
 
 The Cache modules are designed to assist a developer in persisting data for a
 specified period of time.  Often these modules are used in web applications to
-store data locally to save repeated and redundant expensive calls to remove
+store data locally to save repeated and redundant expensive calls to remote
 machines or databases.
 
 The Cache interface is implemented by derived classes that store cached data
@@ -54,7 +54,7 @@ use fields qw(
         default_expires removal_strategy size_limit
         load_callback validate_callback);
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 our $EXPIRES_NOW = 'now';
 our $EXPIRES_NEVER = 'never';
@@ -487,10 +487,10 @@ sub Canonicalize_Expiration_Time {
 
     my $time;
 
-    if ($timespec =~ /^\d+$/) {
+    if ($timespec =~ /^\s*\d+\s*$/) {
         $time = $timespec;
     }
-    if ($timespec eq $EXPIRES_NOW) {
+    elsif ($timespec eq $EXPIRES_NOW) {
         $time = 0;
     }
     elsif ($timespec eq $EXPIRES_NEVER) {
@@ -625,6 +625,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Cache.pm,v 1.2 2003-06-29 14:31:18 caleishm Exp $
+$Id: Cache.pm,v 1.3 2003-08-14 13:19:15 caleishm Exp $
 
 =cut
