@@ -1,3 +1,8 @@
+2004-03-23
+	- Bugfix release (2.02)
+	- Update require to 5.006 since 'use warnings' depends on it
+	  (credit to Adam Kennedy).
+
 2003-12-15
 	- Fixed the Cache::freeze() shortcut method which wasn't passing
 	  arguments to Cache::Entry::freeze() (credit to Ingo Blechschmidt).
