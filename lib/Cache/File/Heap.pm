@@ -218,7 +218,21 @@ sub _db {
 
 sub _Num_Compare {
     my ($key1, $key2) = @_;
-    return $key1 <=> $key2;
+
+    # somehow we can get undefined keys here?  Probably a db bug.
+
+    if (not defined $key1 and not defined $key2) {
+        return 0
+    }
+    elsif (defined $key1 and not defined $key2) {
+        return 1;
+    }
+    elsif (not defined $key1 and defined $key2) {
+        return -1;
+    }
+    else {
+        return $key1 <=> $key2;
+    }
 }
 
 
@@ -242,6 +256,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Heap.pm,v 1.3 2004-03-22 13:16:41 caleishm Exp $
+$Id: Heap.pm,v 1.4 2004-11-08 05:51:03 caleishm Exp $
 
 =cut
