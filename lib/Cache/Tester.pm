@@ -35,7 +35,7 @@ use Carp;
 $VERSION = "2.00";
 @EXPORT = (qw(run_cache_tests $CACHE_TESTS), @Test::More::EXPORT);
 
-$CACHE_TESTS = 67;
+$CACHE_TESTS = 71;
 
 sub run_cache_tests {
     my ($cache) = @_;
@@ -54,6 +54,9 @@ sub run_cache_tests {
     test_handle_async_read($cache);
     test_handle_async_remove($cache);
     test_handle_async_replace($cache);
+    test_validity($cache);
+    test_load_callback($cache);
+    test_validate_callback($cache);
 }
 
 # Test storing, retrieving and removing simple scalars
@@ -363,6 +366,50 @@ sub test_handle_async_replace {
     _is($cache->size(), $size+20, 'cache size is correct');
 }
 
+sub test_validity {
+    my ($cache) = @_;
+
+    my $entry = $cache->entry('validityentry');
+    $entry->remove();
+
+    # create an entry with validity
+    $entry->set('test data');
+    $entry->set_validity({ tester => 'test string' });
+
+    undef $entry;
+    $entry = $cache->entry('validityentry');
+    my $validity = $entry->validity();
+    _ok($validity, 'validity retrieved');
+    _is($validity->{tester}, 'test string', 'validity correct');
+}
+
+sub test_load_callback {
+    my ($cache) = @_;
+
+    my $key = 'testloadcallback';
+    $cache->remove($key);
+
+    my $old_callback = $cache->load_callback();
+    $cache->set_load_callback(sub { return "result ".$_[0]->key() });
+
+    _ok($cache->get($key), "result $key");
+    $cache->set_load_callback($old_callback);
+}
+
+sub test_validate_callback {
+    my ($cache) = @_;
+
+    my $key = 'testvalidatecallback';
+    my $result;
+    my $old_callback = $cache->validate_callback();
+    $cache->set_validate_callback(sub { $result = "result ".$_[0]->key() });
+
+    $cache->set($key, 'somedata');
+    $cache->get($key);
+    # The caller func in _is doesn't work for some strange reason....
+    is($result, "result $key");
+    $cache->set_validate_callback($old_callback);
+}
 
 
 ### Wrappers for test methods to add function name
@@ -429,6 +476,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Tester.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

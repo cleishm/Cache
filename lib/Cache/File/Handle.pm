@@ -24,7 +24,7 @@ sub new {
     my ($filename, $mode, $perms, $close_callback) = @_;
 
     my $self = $class->SUPER::new($filename, $mode, $perms)
-    	or return undef;
+        or return undef;
     bless $self, $class;
     *$self->{_cache_close_callback} = $close_callback;
 
@@ -75,6 +75,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Handle.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Handle.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

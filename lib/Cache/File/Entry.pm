@@ -95,7 +95,7 @@ sub _set {
     # only remove current size if there is no active write handle
     elsif ($self->_trylock(LOCK_SH)) {
         $orig_size = $self->size();
-	$self->_unlock();
+    $self->_unlock();
     }
     else {
         $orig_size = 0;
@@ -118,7 +118,7 @@ sub _set {
     $cache->unlock();
 }
 
-sub get {
+sub _get {
     my Cache::File::Entry $self = shift;
 
     my $cache = $self->{cache};
@@ -181,23 +181,23 @@ sub remove {
     }
 
     my $index = $cache->get_index();
-    my ($age, $lastuse, $expiry) = $cache->get_index_entries($key)
+    my $index_entries = $cache->get_index_entries($key)
         or warnings::warnif('Cache', "missing index entry for $key");
     delete $$index{$key};
 
-    if ($age) {
+    if ($$index_entries{age}) {
         my $ageheap = $cache->get_age_heap();
-        $ageheap->delete($age, $key);
+        $ageheap->delete($$index_entries{age}, $key);
     }
 
-    if ($lastuse) {
+    if ($$index_entries{lastuse}) {
         my $useheap = $cache->get_use_heap();
-        $useheap->delete($lastuse, $key);
+        $useheap->delete($$index_entries{lastuse}, $key);
     }
 
-    if ($expiry) {
+    if ($$index_entries{expiry}) {
         my $expheap = $cache->get_exp_heap();
-        $expheap->delete($expiry, $key)
+        $expheap->delete($$index_entries{expiry}, $key)
     }
 
     my $size = 0;
@@ -224,9 +224,9 @@ sub expiry {
     my $cache = $self->{cache};
 
     $cache->lock();
-    my (undef, undef, $expiry) = $cache->get_index_entries($self->{key});
+    my $index_entries = $cache->get_index_entries($self->{key});
     $cache->unlock();
-    return $expiry;
+    return $index_entries? $$index_entries{expiry} : undef;
 }
 
 sub _set_expiry {
@@ -238,16 +238,20 @@ sub _set_expiry {
 
     $cache->lock();
 
-    my $index = $cache->get_index();
+    my $index_entries = $cache->get_index_entries($key);
 
-    my ($age, $lastuse, $expiry) = $cache->get_index_entries($key)
-        or warnings::warnif('Cache', "missing index entry for $key");
+    unless ($index_entries) {
+        $cache->unlock();
+        croak "Cannot set expiry on non-existant entry: $key";
+    }
 
     my $expheap = $cache->get_exp_heap();
-    $expheap->delete($expiry, $key) if $expiry;
+    $expheap->delete($$index_entries{expiry}, $key)
+        if $$index_entries{expiry};
     $expheap->add($time, $key) if $time;
 
-    $cache->set_index_entries($key, $age, $lastuse, $time);
+    $$index_entries{expiry} = $time;
+    $cache->set_index_entries($key, $index_entries);
 
     $cache->unlock();
 }
@@ -310,6 +314,41 @@ sub _handle {
     $cache->unlock();
 
     return $handle;
+}
+
+
+sub validity {
+    my Cache::File::Entry $self = shift;
+
+    my $cache = $self->{cache};
+    $cache->lock();
+
+    my $index_entries = $cache->get_index_entries($self->{key});
+
+    $cache->unlock();
+
+    return $index_entries? $$index_entries{validity} : undef;
+}
+
+sub set_validity {
+    my Cache::File::Entry $self = shift;
+    my ($data) = @_;
+
+    my $key = $self->{key};
+    my $cache = $self->{cache};
+    $cache->lock();
+
+    my $index_entries = $cache->get_index_entries($key);
+
+    unless ($index_entries) {
+        $cache->unlock();
+        croak "Cannot set validity on non-existant entry: $key";
+    }
+
+    $$index_entries{validity} = $data;
+    $cache->set_index_entries($key, $index_entries);
+
+    $cache->unlock();
 }
 
 
@@ -390,7 +429,7 @@ sub _lock {
 
     # no need for any locking with LOCK_NONE
     if ($self->{cache}->cache_lock_level() != Cache::File::LOCK_NONE()) {
-    	local $File::NFSLock::LOCK_EXTENSION = $Cache::File::LOCK_EXT;
+        local $File::NFSLock::LOCK_EXTENSION = $Cache::File::LOCK_EXT;
         my $oldmask = umask $self->{cache}->cache_umask();
 
         my $lock = File::NFSLock->new({
@@ -398,7 +437,7 @@ sub _lock {
                 lock_type           => $type | ($tryonly? LOCK_NB : 0),
                 stale_lock_timeout  => $Cache::File::STALE_LOCK_TIMEOUT,
             });
-	
+    
         unless ($lock) {
             umask $oldmask;
             $tryonly and return 0;
@@ -509,6 +548,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.2 2003-06-08 22:25:45 caleishm Exp $
+$Id: Entry.pm,v 1.3 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

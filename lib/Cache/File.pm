@@ -32,6 +32,7 @@ use File::Spec;
 use File::Path;
 use File::NFSLock;
 use DB_File;
+use Storable;
 use Carp;
 
 use base qw(Cache);
@@ -136,12 +137,14 @@ sub purge {
                 # update all the indexes (remove references to this key)
                 my $path = $self->cache_file_path($_);
 
-                my ($age, $lastuse) = $self->get_index_entries($_)
+                my $index_entries = $self->get_index_entries($_)
                     or warnings::warnif('Cache', "missing index entry for $_");
                 delete $$index{$_};
 
-                $ageheap->delete($age, $_) if $age;
-                $useheap->delete($lastuse, $_) if $lastuse;
+                $ageheap->delete($$index_entries{age}, $_)
+                    if $$index_entries{age};
+                $useheap->delete($$index_entries{lastuse}, $_)
+                    if $$index_entries{lastuse};
 
                 # reduce the cache size and count
                 $$index{$COUNT_KEY}--;
@@ -246,10 +249,10 @@ sub _set_cache_root {
 
     # create root
     unless (-d $self->{root}) {
-    	my $oldmask = umask $self->cache_umask();
+        my $oldmask = umask $self->cache_umask();
         eval { mkpath($self->{root}) }
             or die 'Failed to create cache root '.$self->{root}.": $@";
-	umask $oldmask;
+        umask $oldmask;
     }
 
     # set required file paths
@@ -455,19 +458,22 @@ sub create_entry {
     my $useheap = $self->get_use_heap();
     $useheap->add($time, $key);
 
-    $self->set_index_entries($key, $time, $time, undef);
+    $self->set_index_entries($key, { age => $time, lastuse => $time });
 }
 
 sub update_last_use {
     my Cache::File $self = shift;
     my ($key, $time) = @_;
 
-    my ($age, $lastuse, $expiry) = $self->get_index_entries($key)
+    my $index_entries = $self->get_index_entries($key)
         or warnings::warnif('Cache', "missing index entry for $key");
+
     my $useheap = $self->get_use_heap();
-    $useheap->delete($lastuse, $key);
+    $useheap->delete($$index_entries{lastuse}, $key);
     $useheap->add($time, $key);
-    $self->set_index_entries($key, $age, $time, $expiry);
+
+    $$index_entries{lastuse} = $time;
+    $self->set_index_entries($key, $index_entries);
 }
 
 sub change_count {
@@ -495,20 +501,23 @@ sub get_index_entries {
     my $index_entry = $$index{$key}
         or return undef;
 
-    my ($age, $lastuse, $expiry) = split(':', $index_entry);
-    $age and $lastuse
+    my $index_entries = Storable::thaw($index_entry);
+    $$index_entries{age} and $$index_entries{lastuse}
         or warnings::warnif('Cache', "invalid index entry for $_");
 
-    return ($age, $lastuse, $expiry);
+    return $index_entries;
 }
 
 sub set_index_entries {
     my Cache::File $self = shift;
-    my ($key, $age, $lastuse, $expiry) = @_;
-    $age and $lastuse
+    my $key = shift;
+    my $index_entries = $#_? { @_ } : shift;
+
+    $$index_entries{age} and $$index_entries{lastuse}
         or croak "failed to supply age and lastuse for index update on $key";
+
     my $index = $self->get_index();
-    $$index{$key} = join(':', $age, $lastuse, $expiry||'');
+    $$index{$key} = Storable::nfreeze($index_entries);
 }
 
 sub get_index {
@@ -593,9 +602,9 @@ age.  The use the BTREE variant in order to implement a heap (see
 Cache::File::Heap).  This is probably not the most efficient format and having
 3 separate index files adds overhead.  These are also cross-referenced with
 a fourth index file that uses a normal hash db and contains all these time
-stamps (joined into a colon separated string) indexed by key.  Needless to say,
-all this could be done more efficiently - probably by using a single index in
-a custom format.
+stamps (frozen together with the validity object to a single scalar via
+Storable) indexed by key.  Needless to say, all this could be done more
+efficiently - probably by using a single index in a custom format.
 
 =item locking efficiency
 
@@ -628,6 +637,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: File.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: File.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

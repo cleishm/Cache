@@ -149,7 +149,7 @@ sub minimum {
     my Cache::File::Heap $self = shift;
     my ($key, $val) = (0,0);
     $self->_db->seq($key, $val, R_FIRST)
-    	and return undef;
+        and return undef;
     return wantarray? ($key, $val) : $key;
 }
 
@@ -166,7 +166,7 @@ sub minimum_dup {
     my $db = $self->_db;
     my ($key, $val) = (0,0);
     $db->seq($key, $val, R_FIRST)
-    	and return undef;
+        and return undef;
     return wantarray? ($key, [ $db->get_dup($key) ]) : $key;
 }
 
@@ -181,7 +181,7 @@ sub extract_minimum {
     my $db = $self->_db;
     my ($key, $val) = (0,0);
     $db->seq($key, $val, R_FIRST)
-    	and return undef;
+        and return undef;
     $db->del_dup($key, $val);
     return wantarray? ($key, $val) : $key;
 }
@@ -197,7 +197,7 @@ sub extract_minimum_dup {
     my $db = $self->_db;
     my ($key, $val) = (0,0);
     $db->seq($key, $val, R_FIRST)
-    	and return undef;
+        and return undef;
     my @values = $db->get_dup($key) if wantarray;
     $db->del($key);
     # bugfix for broken db1 - not all values are removed the first time
@@ -242,6 +242,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Heap.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Heap.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

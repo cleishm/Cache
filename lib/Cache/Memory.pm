@@ -39,7 +39,7 @@ our $VERSION = '2.00';
 
 # storage for all data
 # data is stored in the form:
-#   $Store{namespace}{key}{data,exp_elem,age_elem,use_elem,rc,handlelock}
+#   $Store{ns}{key}{data,exp_elem,age_elem,use_elem,rc,validity,handlelock}
 #
 # Cache::Memory::Entry elements will be passed the final hash as a reference
 # when they are constructed.  This reference MUST point to the SAME hash for
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Memory.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

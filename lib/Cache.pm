@@ -34,6 +34,7 @@ instantiating and using a file system based cache.
   return $customer;
 
 Of course, far more powerful methods are available for accessing cached data.
+Also see the TIE INTERFACE below.
 
 =head1 METHODS
 
@@ -48,7 +49,10 @@ use warnings::register;
 use Carp;
 use Date::Parse;
 
-use fields qw(default_expires removal_strategy size_limit);
+use base qw(Tie::Hash);
+use fields qw(
+        default_expires removal_strategy size_limit
+        load_callback validate_callback);
 
 our $VERSION = '2.00';
 
@@ -71,15 +75,24 @@ sub new {
 
     ref $self or croak 'Must use a subclass of Cache';
 
-    $self->set_default_expires($args->{default_expires})
-        if $args->{default_expires};
+    $self->set_default_expires($args->{default_expires});
 
-    $self->_set_removal_strategy(
-    	$args->{removal_strategy} || 'Cache::RemovalStrategy::LRU');
+        # set removal strategy
+    my $strategy = $args->{removal_strategy} || 'Cache::RemovalStrategy::LRU';
+    unless (ref($strategy)) {
+        eval "require $strategy" or die @_;
+        $strategy = $strategy->new();
+    }
+    $self->{removal_strategy} = $strategy;
 
-    $self->_set_size_limit($args->{size_limit})
-        if $args->{size_limit};
+    # set size limit
+    $self->{size_limit} = $args->{size_limit};
 
+    # set load callback
+    $self->set_load_callback($args->{load_callback});
+
+    # set load callback
+    $self->set_validate_callback($args->{validate_callback});
 
     return $self;
 }
@@ -188,17 +201,6 @@ sub removal_strategy {
     return $self->{removal_strategy};
 }
 
-sub _set_removal_strategy {
-    my Cache $self = shift;
-    my ($strategy) = @_;
-
-    unless (ref($strategy)) {
-    	eval "require $strategy" or die @_;
-	$strategy = $strategy->new();
-    }
-    $self->{removal_strategy} = $strategy;
-}
-
 =item size_limit
 
 The size limit for the cache.
@@ -212,10 +214,47 @@ sub size_limit {
     return $self->{size_limit};
 }
 
-sub _set_size_limit {
+=item load_callback
+
+The load callback for the cache.  This may be set to a function that will get
+called anytime a 'get' is issued for data that does not exist in the cache.
+
+ my $limit = $c->load_callback();
+ $c->set_load_callback($callback_func);
+
+=cut
+
+sub load_callback {
     my Cache $self = shift;
-    my ($size_limit) = @_;
-    $self->{size_limit} = $size_limit;
+    return $self->{load_callback};
+}
+
+sub set_load_callback {
+    my Cache $self = shift;
+    my ($load_callback) = @_;
+    $self->{load_callback} = $load_callback;
+}
+
+=item validate_callback
+
+The validate callback for the cache.  This may be set to a function that will
+get called anytime a 'get' is issued for data that does not exist in the
+cache.
+
+ my $limit = $c->validate_callback();
+ $c->set_validate_callback($callback_func);
+
+=cut
+
+sub validate_callback {
+    my Cache $self = shift;
+    return $self->{validate_callback};
+}
+
+sub set_validate_callback {
+    my Cache $self = shift;
+    my ($validate_callback) = @_;
+    $self->{validate_callback} = $validate_callback;
 }
 
 
@@ -292,6 +331,7 @@ sub expiry {
     my $key = shift;
     return $self->entry($key)->expiry();
 }
+sub get_expiry { shift->expiry(@_); }
 
 =item $c->set_expiry( $key, $time )
 
@@ -311,6 +351,27 @@ sub handle {
     my Cache $self = shift;
     my $key = shift;
     return $self->entry($key)->handle();
+}
+
+=item $c->validity( $key )
+
+=cut
+
+sub validity {
+    my Cache $self = shift;
+    my $key = shift;
+    return $self->entry($key)->validity();
+}
+sub get_validity { shift->validity(@_); }
+
+=item $c->set_validity( $key, $data )
+
+=cut
+
+sub set_validity {
+    my Cache $self = shift;
+    my $key = shift;
+    return $self->entry($key)->set_validity(@_);
 }
 
 =item $c->freeze( $key, $data, [ $expiry ] )
@@ -335,6 +396,21 @@ sub thaw {
 
 
 =back
+
+=head1 TIE INTERFACE
+
+  tie %hash, 'Cache::File', { cache_root => $tempdir };
+
+  $hash{'key'} = 'some data';
+  $data = $hash{'key'};
+
+The Cache classes can be used via the tie interface, as shown in the synopsis.
+This allows the cache to be accessed via a hash.  All the standard methods
+for accessing the hash are supported , with the exception of the 'keys' or
+'each' call.
+
+The tie interface is especially useful with the load_callback to automatically
+populate the hash.
 
 =head1 REMOVAL STRATEGY METHODS
 
@@ -384,8 +460,8 @@ sub check_size {
     defined $self->{size_limit} or return;
 
     if ($size > $self->{size_limit}) {
-    	$self->{removal_strategy}->remove_size(
-		$self, $size - $self->{size_limit});
+        $self->{removal_strategy}->remove_size(
+                $self, $size - $self->{size_limit});
     }
 }
 
@@ -425,7 +501,7 @@ sub Canonicalize_Expiration_Time {
         $time = 0;
     }
     elsif ($timespec =~ /^\s*\+(\d+)\s*$/) {
-    	$time = $1 + time();
+        $time = $1 + time();
     }
     elsif ($timespec =~ /^\s*(\+?\d+)\s*(\w*)\s*$/
         and exists($_Expiration_Units{$2}))
@@ -440,6 +516,55 @@ sub Canonicalize_Expiration_Time {
     return $time;
 }
 
+
+# Hash tie methods
+
+sub TIEHASH {
+    my Cache $class = shift;
+    return $class->new(@_);
+}
+
+sub STORE {
+    my Cache $self = shift;
+    my ($key, $value) = @_;
+    return $self->set($key, $value);
+}
+
+sub FETCH {
+    my Cache $self = shift;
+    my ($key) = @_;
+    return $self->get($key);
+}
+
+# NOT SUPPORTED
+sub FIRSTKEY {
+    my Cache $self = shift;
+    return undef;
+}
+
+# NOT SUPPORTED
+sub NEXTKEY {
+    my Cache $self = shift;
+    #my ($lastkey) = @_;
+    return undef;
+}
+
+sub EXISTS {
+    my Cache $self = shift;
+    my ($key) = @_;
+    return $self->exists($key);
+}
+
+sub DELETE {
+    my Cache $self = shift;
+    my ($key) = @_;
+    return $self->remove($key);
+}
+
+sub CLEAR {
+    my Cache $self = shift;
+    return $self->clear();
+}
 
 
 1;
@@ -500,6 +625,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Cache.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Cache.pm,v 1.2 2003-06-29 14:31:18 caleishm Exp $
 
 =cut

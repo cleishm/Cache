@@ -101,7 +101,7 @@ sub set {
     my ($data, $expiry) = @_;
 
     unless (defined $data) {
-    	return $self->remove();
+        return $self->remove();
     }
 
     ref($data) and warnings::warnif('Cache','Reference passed to set');
@@ -129,7 +129,31 @@ Returns the data from the cache, or undef if the entry doesn't exist.
 
 =cut
 
-sub get;
+# ensure load_callback and validity callback is issued
+sub get {
+    my Cache::Entry $self = shift;
+    my Cache $cache = $self->{cache};
+
+    my $result = $self->_get(@_);
+
+    if (defined $result) {
+        my $validate_callback = $cache->{validate_callback};
+        if ($validate_callback) {
+            $validate_callback->($self) or return undef;
+        }
+    }
+    else {
+        my $load_callback = $cache->{load_callback}
+            or return undef;
+        my @options;
+        ($result, @options) = $load_callback->($self);
+        $self->set($result, @options) if defined $result;
+    }
+    return $result;
+}
+
+# Implement this method instead of get
+sub _get;
 
 =item my $size = $e->size()
 
@@ -154,6 +178,7 @@ Returns the expiry time of the entry, in seconds since the epoch.
 =cut
 
 sub expiry;
+sub get_expiry { shift->expiry(@_); }
 
 =item $e->set_expiry( $time )
 
@@ -233,6 +258,32 @@ sub _handle;
 
 =back
 
+=head1 STORING VALIDITY OBJECTS
+
+There are two additional set & get methods that can be used to store a
+validity object that is associated with the data in question.  Typically this
+is useful in conjunction with a validate_callback, and may be used to store a
+timestamp or similar to validate against.  The validity data stored may be any
+complex data that can be serialized via Storable.
+
+=over
+
+=item $e->validity()
+
+=cut
+
+sub validity;
+sub get_validity { shift->validity(@_); }
+
+=item $e->set_validity( $data )
+
+=cut
+
+sub set_validity;
+
+
+=back
+
 =head1 STORING COMPLEX OBJECTS
 
 The set and get methods only allow for working with simple scalar types, but
@@ -300,6 +351,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Entry.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

@@ -80,6 +80,16 @@ sub _handle {
     return Cache::IOString->new(\$data, $mode);
 }
 
+sub validity {
+    #my Cache::Null::Entry $self = shift;
+    return undef;
+}
+
+sub set_validity {
+    #my Cache::Null::Entry $self = shift;
+    return;
+}
+
 
 1;
 __END__
@@ -101,6 +111,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.1.1.1 2003-06-05 21:46:10 caleishm Exp $
+$Id: Entry.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut

@@ -19,6 +19,7 @@ require 5.005;
 use strict;
 use warnings;
 use Cache::Memory;
+use Storable;
 use Carp;
 
 use base qw(Cache::Entry);
@@ -100,7 +101,7 @@ sub _set {
     $cache->purge();
 }
 
-sub get {
+sub _get {
     my Cache::Memory::Entry $self = shift;
 
     $self->exists() or return undef;
@@ -142,7 +143,9 @@ sub _set_expiry {
 
     my $cache = $self->{cache};
     my $entry = $self->{store_entry};
-    exists $entry->{data} or return;
+
+    exists $entry->{data}
+        or croak "Cannot set expiry on non-existant entry: $self->{key}";
 
     my $exp_elem = $entry->{exp_elem};
 
@@ -198,6 +201,24 @@ sub _handle {
     else {
         return Cache::IOString->new($dataref, $mode);
     }
+}
+
+sub validity {
+    my Cache::Memory::Entry $self = shift;
+    # return a clone of the validity
+    return Storable::dclone($self->{store_entry}->{validity});
+}
+
+sub set_validity {
+    my Cache::Memory::Entry $self = shift;
+    my ($data) = @_;
+
+    my $entry = $self->{store_entry};
+
+    exists $entry->{data}
+        or croak "Cannot set validity on non-existant entry: $self->{key}";
+
+    $entry->{validity} = $data;
 }
 
 
@@ -257,6 +278,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.1.1.1 2003-06-05 21:46:09 caleishm Exp $
+$Id: Entry.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
 
 =cut
