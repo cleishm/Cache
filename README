@@ -7,7 +7,7 @@ machines or databases.
 
 The Cache package provides the 'Cache' module, a generic interface for
 creating persistent data stores.  The interface is implemented by the
-Cache::Memory, Cache::File and Cache::SharedMemory modules.
+Cache::Memory and Cache::File modules.
 
 This work aggregates and extends the original Cache::Cache modules.
 
