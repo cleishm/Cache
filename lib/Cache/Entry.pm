@@ -182,12 +182,12 @@ sub get_expiry { shift->expiry(@_); }
 
 =item $e->set_expiry( $time )
 
-Set the expiry time in seconds, or alternatively using a string like '10
-minutes'.  Valid units are s, second, seconds, sec, m, minute, minutes, min,
-h, hour, hours, w, week, weeks, M, month, months, y, year and years.  You can
-also specify an absolute time, such as '16 Nov 94 22:28:20' or any other time
-that Date::Parse can understand.  Finally, the strings 'now' and 'never' may
-also be used.
+Set the expiry time in seconds since the epoch, or alternatively using a
+string like '10 minutes'.  Valid units are s, second, seconds, sec, m, minute,
+minutes, min, h, hour, hours, w, week, weeks, M, month, months, y, year and
+years.  You can also specify an absolute time, such as '16 Nov 94 22:28:20' or
+any other time that Date::Parse can understand.  Finally, the strings 'now'
+and 'never' may also be used.
 
 =cut
 
@@ -351,6 +351,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: Entry.pm,v 1.3 2003-08-14 13:21:37 caleishm Exp $
 
 =cut
