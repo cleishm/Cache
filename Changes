@@ -1,4 +1,9 @@
+2.01
+	- Bugfix release
+	 o Fixed parsing of all digit expiry times
+	 o Fixed use of scalar validity in Cache::Memory
+	 o Allowed validity to be set on non-existant entry
+	   (sets entry data to zero length)
 
 2.00
 	- Initial release
-
