@@ -205,8 +205,11 @@ sub _handle {
 
 sub validity {
     my Cache::Memory::Entry $self = shift;
-    # return a clone of the validity
-    return Storable::dclone($self->{store_entry}->{validity});
+    $self->exists() or return undef;
+    my $validity = $self->{store_entry}->{validity};
+    # return a clone of the validity if it's a reference
+    return Storable::dclone($validity) if ref($validity);
+    return $validity;
 }
 
 sub set_validity {
@@ -278,6 +281,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.2 2003-06-29 14:31:19 caleishm Exp $
+$Id: Entry.pm,v 1.3 2003-08-14 13:27:27 caleishm Exp $
 
 =cut
