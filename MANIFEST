@@ -27,7 +27,9 @@ t/01fileheap.t
 t/file.t
 t/file_fifo.t
 t/file_lru.t
+t/file_tie.t
 t/memory.t
 t/memory_fifo.t
 t/memory_lru.t
+t/memory_tie.t
 t/null.t
