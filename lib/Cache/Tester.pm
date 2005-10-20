@@ -32,7 +32,7 @@ use vars qw(@ISA @EXPORT $VERSION $CACHE_TESTS);
 use Carp;
 
 @ISA = qw(Exporter Test::More);
-$VERSION = "2.02";
+$VERSION = "2.03";
 @EXPORT = (qw(run_cache_tests $CACHE_TESTS), @Test::More::EXPORT);
 
 $CACHE_TESTS = 75;
@@ -498,6 +498,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.5 2005-10-20 12:33:52 caleishm Exp $
+$Id: Tester.pm,v 1.6 2005-10-20 12:52:03 caleishm Exp $
 
 =cut

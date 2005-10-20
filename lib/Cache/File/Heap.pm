@@ -31,7 +31,7 @@ use Carp;
 
 use fields qw(db dbhash);
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 # common info object
 my $BTREEINFO = new DB_File::BTREEINFO;
@@ -256,6 +256,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Heap.pm,v 1.4 2004-11-08 05:51:03 caleishm Exp $
+$Id: Heap.pm,v 1.5 2005-10-20 12:52:03 caleishm Exp $
 
 =cut

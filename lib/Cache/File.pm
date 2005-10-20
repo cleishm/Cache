@@ -41,7 +41,7 @@ use fields qw(
     expheap ageheap useheap index lockfile
     lock lockcount openexp openage openuse openidx);
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 sub LOCK_NONE ()  { 0 }
 sub LOCK_LOCAL () { 1 }
@@ -648,6 +648,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: File.pm,v 1.5 2005-10-20 12:33:52 caleishm Exp $
+$Id: File.pm,v 1.6 2005-10-20 12:52:03 caleishm Exp $
 
 =cut

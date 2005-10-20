@@ -54,7 +54,7 @@ use fields qw(
         default_expires removal_strategy size_limit
         load_callback validate_callback);
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 our $EXPIRES_NOW = 'now';
 our $EXPIRES_NEVER = 'never';
@@ -625,6 +625,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Cache.pm,v 1.5 2004-03-22 13:16:40 caleishm Exp $
+$Id: Cache.pm,v 1.6 2005-10-20 12:52:03 caleishm Exp $
 
 =cut
