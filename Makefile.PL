@@ -11,6 +11,7 @@ WriteMakefile(
 	Test::More		=> 0.45,
 	Heap::Fibonacci		=> 0.01,
 	IO::String		=> 1.02,
+	File::Find		=> 0, # any version
 	File::Spec		=> 0.8,
 	File::Path		=> 1.00,
 	File::NFSLock		=> 1.20,

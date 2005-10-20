@@ -73,7 +73,7 @@ my $COUNT_KEY = '__cache_count';
 The constructor takes cache properties as named arguments, for example:
 
   my $cache = Cache::File->new( cache_root => '/tmp/mycache',
-                                lock_level => Cache::File::LOCK_LOCAL,
+                                lock_level => Cache::File::LOCK_LOCAL(),
                                 default_expires => '600 sec' );
 
 Note that you MUST provide a cache_root property.
@@ -312,17 +312,17 @@ available:
 
 =over
 
-=item Cache::File::LOCK_NONE
+=item Cache::File::LOCK_NONE()
 
 No locking is performed.  Useful when you can guarantee only one process will
 be accessing the cache at a time.
 
-=item Cache::File::LOCK_LOCAL
+=item Cache::File::LOCK_LOCAL()
 
 Locking is performed, but it is not suitable for use over NFS filesystems.
 However it is more efficient.
 
-=item Cache::File::LOCK_NFS
+=item Cache::File::LOCK_NFS()
 
 Locking is performed in a way that is suitable for use on NFS filesystems.
 
@@ -340,7 +340,18 @@ sub cache_lock_level {
 sub _set_cache_lock_level {
     my Cache::File $self = shift;
     my ($locklevel) = @_;
-    $self->{locklevel} = (defined $locklevel)? $locklevel : $DEFAULT_LOCKLEVEL;
+
+    if (defined $locklevel) {
+        croak "Unknown lock level requested"
+            unless ($locklevel =~ /^[0-9]+$/ &&
+                    ($locklevel == LOCK_NONE ||
+                     $locklevel == LOCK_LOCAL ||
+                     $locklevel == LOCK_NFS));
+    } else {
+        $locklevel = $DEFAULT_LOCKLEVEL;
+    }
+
+    $self->{locklevel} = $locklevel;
 }
 
 
@@ -637,6 +648,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: File.pm,v 1.4 2004-03-22 13:16:41 caleishm Exp $
+$Id: File.pm,v 1.5 2005-10-20 12:33:52 caleishm Exp $
 
 =cut

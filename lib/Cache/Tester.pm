@@ -429,8 +429,7 @@ sub test_validate_callback {
 
     $cache->set($key, 'somedata');
     $cache->get($key);
-    # The caller func in _is doesn't work for some strange reason....
-    is($result, "result $key");
+    _is($result, "result $key", "validate_callback ok");
     $cache->set_validate_callback($old_callback);
 }
 
@@ -499,6 +498,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.4 2004-03-22 13:16:41 caleishm Exp $
+$Id: Tester.pm,v 1.5 2005-10-20 12:33:52 caleishm Exp $
 
 =cut
