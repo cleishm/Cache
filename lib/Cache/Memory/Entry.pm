@@ -150,7 +150,7 @@ sub _set_expiry {
     my $exp_elem = $entry->{exp_elem};
 
     if ($exp_elem) {
-        $cache->del_expiry_from_heap($exp_elem);
+        $cache->del_expiry_from_heap($self->{key}, $exp_elem);
         $entry->{exp_elem} = undef;
     }
 
@@ -283,6 +283,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.6 2005-10-20 12:52:03 caleishm Exp $
+$Id: Entry.pm,v 1.7 2005-11-07 21:43:48 caleishm Exp $
 
 =cut

@@ -293,7 +293,7 @@ sub del_expiry_from_heap {
     my Cache::Memory $self = shift;
     my ($key, $exp_elem) = @_;
 
-    $Expiry_Heap->del($exp_elem);
+    $Expiry_Heap->delete($exp_elem);
 }
 
 sub add_age_to_heap {
@@ -367,6 +367,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Memory.pm,v 1.7 2005-10-20 12:52:03 caleishm Exp $
+$Id: Memory.pm,v 1.8 2005-11-07 21:43:48 caleishm Exp $
 
 =cut
