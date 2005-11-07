@@ -35,7 +35,7 @@ use Carp;
 $VERSION = "2.03";
 @EXPORT = (qw(run_cache_tests $CACHE_TESTS), @Test::More::EXPORT);
 
-$CACHE_TESTS = 75;
+$CACHE_TESTS = 79;
 
 sub run_cache_tests {
     my ($cache) = @_;
@@ -201,7 +201,15 @@ sub test_expiry {
     $entry->set('test data', '1 sec');
     _ok($entry->exists(), 'entry with 1 sec timeout added');
     sleep(2);
-    _ok(!$entry->exists, 'entry expired');
+    _ok(!$entry->exists(), 'entry expired');
+    _is($cache->size(), $size, 'size is unchanged');
+
+    $entry->set('test data', '1 minute');
+    _ok($entry->exists(), 'entry with 1 min timeout added');
+    sleep(2);
+    _ok($entry->exists(), 'entry with 1 min timeout remains');
+    $entry->set_expiry('now');
+    _ok(!$entry->exists(), 'entry expired after change to instant timeout');
     _is($cache->size(), $size, 'size is unchanged');
 }
 
@@ -498,6 +506,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Tester.pm,v 1.6 2005-10-20 12:52:03 caleishm Exp $
+$Id: Tester.pm,v 1.7 2005-11-07 21:55:21 caleishm Exp $
 
 =cut
