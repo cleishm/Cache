@@ -196,7 +196,13 @@ sub set_expiry {
     my Cache::Entry $self = shift;
     my ($time) = @_;
 
-    $self->_set_expiry(Cache::Canonicalize_Expiration_Time($time));
+    my $expiry = Cache::Canonicalize_Expiration_Time($time);
+
+    if (defined $expiry and $expiry == 0) {
+        return $self->remove();
+    }
+
+    $self->_set_expiry($expiry);
 }
 
 # Implement this method instead of set_expiry
@@ -351,6 +357,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.5 2005-10-20 12:52:03 caleishm Exp $
+$Id: Entry.pm,v 1.6 2005-11-07 21:46:11 caleishm Exp $
 
 =cut
