@@ -25,7 +25,7 @@ use Carp;
 use base qw(Cache::Entry);
 use fields qw(store_entry);
 
-our $VERSION = '2.03';
+our $VERSION = '2.04';
 
 
 sub new {
@@ -277,12 +277,12 @@ Cache::Entry, Cache::Memory
 
 =head1 COPYRIGHT
 
- Copyright (C) 2003 Chris Leishman.  All Rights Reserved.
+ Copyright (C) 2003-2006 Chris Leishman.  All Rights Reserved.
 
 This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.7 2005-11-07 21:43:48 caleishm Exp $
+$Id: Entry.pm,v 1.8 2006-01-31 15:23:58 caleishm Exp $
 
 =cut

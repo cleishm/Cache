@@ -1,4 +1,5 @@
 2006-02-01
+	- Bugfix release (2.04)
 	- Fix for failure to call load_callback when verify_callback
 	  fails the result (credit to Chris Fletcher).
 

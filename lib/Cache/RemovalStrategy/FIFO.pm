@@ -58,12 +58,12 @@ Cache
 
 =head1 COPYRIGHT
 
- Copyright (C) 2003 Chris Leishman.  All Rights Reserved.
+ Copyright (C) 2003-2006 Chris Leishman.  All Rights Reserved.
 
 This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: FIFO.pm,v 1.3 2004-03-22 13:16:41 caleishm Exp $
+$Id: FIFO.pm,v 1.4 2006-01-31 15:23:58 caleishm Exp $
 
 =cut
