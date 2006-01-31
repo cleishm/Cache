@@ -1,5 +1,9 @@
+2006-02-01
+	- Fix for failure to call load_callback when verify_callback
+	  fails the result (credit to Chris Fletcher).
+
 2005-11-08
-	- Fix for set_expiry in Cache::Memory (credit to Sean M. Egan)
+	- Fix for set_expiry in Cache::Memory (credit to Sean M. Egan).
 
 2005-10-20
 	- Bugfix release (2.03)

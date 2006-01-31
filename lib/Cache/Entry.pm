@@ -138,17 +138,16 @@ sub get {
 
     if (defined $result) {
         my $validate_callback = $cache->{validate_callback};
-        if ($validate_callback) {
-            $validate_callback->($self) or return undef;
-        }
+        $validate_callback or return $result;
+        $validate_callback->($self) and return $result;
     }
-    else {
-        my $load_callback = $cache->{load_callback}
-            or return undef;
-        my @options;
-        ($result, @options) = $load_callback->($self);
-        $self->set($result, @options) if defined $result;
-    }
+
+    my $load_callback = $cache->{load_callback}
+        or return undef;
+    my @options;
+    ($result, @options) = $load_callback->($self);
+    $self->set($result, @options) if defined $result;
+
     return $result;
 }
 
@@ -357,6 +356,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Entry.pm,v 1.6 2005-11-07 21:46:11 caleishm Exp $
+$Id: Entry.pm,v 1.7 2006-01-31 15:17:38 caleishm Exp $
 
 =cut
