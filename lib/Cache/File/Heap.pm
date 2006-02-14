@@ -117,7 +117,7 @@ sub add {
     defined $key or croak "key undefined";
     defined $val or croak "value undefined";
     # return code from DB_File is 0 on success.....
-    $self->_db->put($key, $val) and die "Heap add failed: $@";
+    $self->_db->put($key, $val) and die "Heap add failed: $!";
 }
 
 =item $h->delete($key, $val)
@@ -256,6 +256,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Heap.pm,v 1.6 2006-01-31 15:23:58 caleishm Exp $
+$Id: Heap.pm,v 1.7 2006-02-14 05:55:21 caleishm Exp $
 
 =cut

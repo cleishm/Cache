@@ -1,3 +1,7 @@
+2006-02-14
+	- Fix in File::Heap::add for the die message when DB_File::put
+	  fails (credit to Eli Yelluas).
+
 2006-02-01
 	- Bugfix release (2.04)
 	- Fix for failure to call load_callback when verify_callback
@@ -23,12 +27,12 @@
 
 2003-08-18
 	- Bugfix release (2.01)
-	 o Fixed parsing of all digit expiry times
-	 o Fixed use of scalar validity in Cache::Memory
-	 o Allowed validity to be set on non-existant entry
-	   (sets entry data to zero length)
-	 o Fixed package name for Cache::Memory::HeapElem
-	 o Documentation fixes
+	- Fixed parsing of all digit expiry times
+	- Fixed use of scalar validity in Cache::Memory
+	- Allowed validity to be set on non-existant entry
+	  (sets entry data to zero length)
+	- Fixed package name for Cache::Memory::HeapElem
+	- Documentation fixes
 
 2003-07-07
 	- Initial release (2.00)
