@@ -238,8 +238,7 @@ sub set_load_callback {
 =item validate_callback
 
 The validate callback for the cache.  This may be set to a function that will
-get called anytime a 'get' is issued for data that does not exist in the
-cache.
+get called anytime a 'get' is issued for data that does exist in the cache.
 
  my $limit = $c->validate_callback();
  $c->set_validate_callback($callback_func);
@@ -625,6 +624,6 @@ This module is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND,
 either expressed or implied. This program is free software; you can
 redistribute or modify it under the same terms as Perl itself.
 
-$Id: Cache.pm,v 1.7 2006-01-31 15:23:58 caleishm Exp $
+$Id: Cache.pm,v 1.7 2006/01/31 15:23:58 caleishm Exp $
 
 =cut
